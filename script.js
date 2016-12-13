@@ -9,9 +9,7 @@ var simulation = d3.forceSimulation()
     .force("charge", d3.forceManyBody())
     .force("center", d3.forceCenter(width / 2, height / 2));
 
-d3.json("miserables.json", function(error, graph) {
-  if (error) throw error;
-
+function createGraph(graph) {
   var link = svg.append("g")
       .attr("class", "links")
     .selectAll("line")
@@ -52,7 +50,7 @@ d3.json("miserables.json", function(error, graph) {
         .attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
   }
-});
+};
 
 function dragstarted(d) {
   if (!d3.event.active) simulation.alphaTarget(0.3).restart();
@@ -70,3 +68,29 @@ function dragended(d) {
   d.fx = null;
   d.fy = null;
 }
+
+// load dataset and create table
+function load_dataset(jsonText) {
+  var data = JSON.parse(jsonText)
+  console.log('data:', data);
+  createGraph(data);
+  simulation.alphaTarget(0.3).restart();
+}
+
+// handle upload button
+function upload_button(el, callback) {
+  var uploader = document.getElementById(el);  
+  var reader = new FileReader();
+
+  reader.onload = function(e) {
+    var contents = e.target.result;
+    callback(contents);
+  };
+
+  uploader.addEventListener("change", handleFiles, false);  
+
+  function handleFiles() {
+    var file = this.files[0];
+    reader.readAsText(file);
+  };
+};
