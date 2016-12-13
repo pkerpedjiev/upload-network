@@ -3,6 +3,10 @@
   stroke-opacity: 0.6;
 }
 
+svg {
+    border: 1px solid black;
+}
+
 .nodes circle {
   stroke: #fff;
   stroke-width: 1.5px;
