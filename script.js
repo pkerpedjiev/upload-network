@@ -5,17 +5,30 @@ var svg = d3.select("svg"),
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
 var simulation = d3.forceSimulation()
-    .force("link", d3.forceLink().id(function(d) { return d.id; }))
+    .force("link", d3.forceLink()
+            .id(function(d) { return d.id; })
+            .distance(function(d) { 
+                var dist = 1 / d.value;
+                //console.log('dist:', dist);
+                return dist; 
+            }))
     .force("charge", d3.forceManyBody())
     .force("center", d3.forceCenter(width / 2, height / 2));
 
 function createGraph(graph) {
+    if (! ("links" in graph)) {
+        console.log("Graph is missing links");
+        return;
+    }
+
+    /*
   var link = svg.append("g")
       .attr("class", "links")
     .selectAll("line")
     .data(graph.links)
     .enter().append("line")
       .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
+      */
 
   var node = svg.append("g")
       .attr("class", "nodes")
@@ -23,14 +36,24 @@ function createGraph(graph) {
     .data(graph.nodes)
     .enter().append("circle")
       .attr("r", 5)
-      .attr("fill", function(d) { return color(d.group); })
+      .attr("fill", function(d) { 
+          if ('color' in d)
+              return d.color;
+          else
+            return color(d.group); 
+      })
       .call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)
           .on("end", dragended));
 
   node.append("title")
-      .text(function(d) { return d.id; });
+      .text(function(d) { 
+          if ('name' in d)
+              return d.name;
+          else
+                return d.id; 
+      });
 
   simulation
       .nodes(graph.nodes)
@@ -40,11 +63,13 @@ function createGraph(graph) {
       .links(graph.links);
 
   function ticked() {
+      /*
     link
         .attr("x1", function(d) { return d.source.x; })
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
+        */
 
     node
         .attr("cx", function(d) { return d.x; })
@@ -53,7 +78,7 @@ function createGraph(graph) {
 };
 
 function dragstarted(d) {
-  if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+  if (!d3.event.active) simulation.alphaTarget(0.9).restart();
   d.fx = d.x;
   d.fy = d.y;
 }
