@@ -1,14 +1,18 @@
-.links line {
-  stroke: #999;
-  stroke-opacity: 0.3;
-}
-
-svg {
-    border: 1px solid black;
-}
-
-.nodes circle {
+.node {
   stroke: #fff;
   stroke-width: 1.5px;
 }
 
+.node .selected {
+  stroke: black;
+}
+
+.link {
+  stroke: #999;
+}
+
+.brush .extent {
+  fill-opacity: .1;
+  stroke: #fff;
+  shape-rendering: crispEdges;
+}
