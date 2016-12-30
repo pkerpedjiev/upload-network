@@ -56,9 +56,13 @@ function selectableForceDirectedGraph() {
             d.previouslySelected = shiftKey && d.selected; });
     })
     .on("brush", function() {
-        console.log('brush event:', d3.event);
+        //console.log('brush event:', d3.event);
         var s = d3.event.selection;
-        var sx = s.map(xScale.invert)
+        var s0 = s[0].map(xScale.invert)
+        var s1 = s[1].map(xScale.invert)
+        var sx = [s0,s1];
+
+        console.log('s:', s);
 
         node.classed("selected", function(d) {
             return d.selected = d.previouslySelected ^
@@ -277,6 +281,7 @@ function selectableForceDirectedGraph() {
         }
 
         if (shiftKey) {
+            // turn off the zoom behavior
             svg_graph.call(zoomer)
             .on("mousedown.zoom", null)
             .on("touchstart.zoom", null)                                                                      
@@ -298,8 +303,8 @@ function selectableForceDirectedGraph() {
 
         brush.call(brusher)
         .on("mousedown.brush", null)
-        .on("touchstart.brush", null)                                                                      
-        .on("touchmove.brush", null)                                                                       
+        .on("touchstart.brush", null)
+        .on("touchmove.brush", null)
         .on("touchend.brush", null);                                                                       
 
         brush.select('.background').style('cursor', 'auto')
