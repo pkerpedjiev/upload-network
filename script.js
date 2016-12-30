@@ -2,6 +2,16 @@ var svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height");
 
+let parentWidth = d3.select('svg').node().parentNode.clientWidth;
+let parentHeight = d3.select('svg').node().parentNode.clientHeight;
+
+console.log('parentWidth:', parentWidth);
+console.log('parentHeight:', parentHeight);
+
+d3.select('svg')
+.attr('width', parentWidth)
+.attr('height', parentHeight);
+
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
 var simulation = d3.forceSimulation()
