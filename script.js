@@ -58,9 +58,8 @@ function selectableForceDirectedGraph() {
     .on("brush", function() {
         //console.log('brush event:', d3.event);
         var s = d3.event.selection;
-        var s0 = s[0].map(xScale.invert)
-        var s1 = s[1].map(xScale.invert)
-        var sx = [s0,s1];
+        var sx = [[xScale.invert(s[0][0]), yScale.invert(s[0][1])],
+                  [xScale.invert(s[1][0]), yScale.invert(s[1][1])]];
 
         console.log('s:', s);
 
