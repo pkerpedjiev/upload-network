@@ -52,16 +52,15 @@ function selectableForceDirectedGraph() {
     //.x(xScale)
     //.y(yScale)
     .on("start", function(d) {
+        console.log('brush start');
         node.each(function(d) { 
             d.previouslySelected = shiftKey && d.selected; });
     })
     .on("brush", function() {
-        //console.log('brush event:', d3.event);
+        console.log('brush event:', d3.event);
         var s = d3.event.selection;
         var sx = [[xScale.invert(s[0][0]), yScale.invert(s[0][1])],
                   [xScale.invert(s[1][0]), yScale.invert(s[1][1])]];
-
-        console.log('s:', s);
 
         node.classed("selected", function(d) {
             return d.selected = d.previouslySelected ^
@@ -70,6 +69,7 @@ function selectableForceDirectedGraph() {
         });
     })
     .on("end", function() {
+        console.log('brush end');
         //d3.event.target.clear();
         //d3.select(this).call(d3.event.target);
     });
@@ -270,6 +270,8 @@ function selectableForceDirectedGraph() {
 
 
     function keydown() {
+        console.log('keycode:', d3.event.keyCode);
+
         shiftKey = d3.event.shiftKey || d3.event.metaKey;
         ctrlKey = d3.event.ctrlKey;
 
@@ -277,6 +279,10 @@ function selectableForceDirectedGraph() {
 
         if (d3.event.keyCode == 67) {   //the 'c' key
             center_view();
+        }
+
+        if (d3.event.keyCode == 83) {   // the 's' key
+            shiftKey = true;
         }
 
         if (shiftKey) {
@@ -292,13 +298,16 @@ function selectableForceDirectedGraph() {
             .on('mousedown.drag', null);
 
             brush.select('.background').style('cursor', 'crosshair')
+            console.log('brusher...');
             brush.call(brusher);
         }
     }
 
     function keyup() {
-        shiftKey = d3.event.shiftKey || d3.event.metaKey;
-        ctrlKey = d3.event.ctrlKey;
+        console.log('keyup');
+        //shiftKey = d3.event.shiftKey || d3.event.metaKey;
+        //ctrlKey = d3.event.ctrlKey;
+        shiftKey = false;
 
         brush.call(brusher)
         .on("mousedown.brush", null)
