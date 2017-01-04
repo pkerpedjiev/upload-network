@@ -2,6 +2,7 @@
 <meta charset="utf-8">
 <link rel='stylesheet' href='style.css' />
 <input type="file" id="uploader">
+<button id="export-button">Export</button>
 
 <div class="box">
   <div class="row content">
@@ -16,4 +17,5 @@
 <script src='script.js'> </script>
 <script>
     upload_button("uploader", load_dataset);
+    export_button("export-button", export_graph);
 </script>
