@@ -45,13 +45,21 @@ var simulation = d3.forceSimulation()
             .id(function(d) { return d.id; })
             .distance(function(d) { 
                 return 30;
-                var dist = 20 / d.value;
+                //var dist = 20 / d.value;
                 //console.log('dist:', dist);
 
                 return dist; 
-            }))
+            })
+            /*
+          .strength(function(d) {
+            return d.value; //Math.sqrt(d.value); 
+          })
+          */
+          )
     .force("charge", d3.forceManyBody())
-    .force("center", d3.forceCenter(parentWidth / 2, parentHeight / 2));
+    .force("center", d3.forceCenter(parentWidth / 2, parentHeight / 2))
+    .force("x", d3.forceX(parentWidth/2))
+    .force("y", d3.forceY(parentHeight/2));
 
 function removeGraphcs() {
     svg.selectAll('g')

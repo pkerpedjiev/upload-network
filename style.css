@@ -24,7 +24,12 @@ body {
 }
 
 .box .row.content {
+    /*
   flex: 1 1 auto;
+  */
+    width: 600px;
+    height: 600px;
+
 }
 
 .box .row.footer {
