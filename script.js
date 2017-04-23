@@ -211,5 +211,24 @@ function export_button(el, callback) {
     var exporter = document.getElementById(el);
 
     exporter.onclick = export_graph;
+}
 
+function toggle_links_button(el, callback) {
+    var linksButton = document.getElementById(el);
+    linksButton.onclick = toggle_links;
+}
+
+var linksVisible = true;
+function toggle_links() {
+  if (linksVisible) {
+    linksVisible = false;
+    d3.selectAll('line')
+      .transition()
+        .style('stroke-opacity', 0);
+  } else {
+    linksVisible = true;
+    d3.selectAll('line')
+      .transition()
+      .style('stroke-opacity', 0.3);
+  }
 }
