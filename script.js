@@ -67,6 +67,7 @@ function removeGraphcs() {
 }
 
 function createGraph(graph) {
+    console.log('graph from createGraph', graph)
     if (! ("links" in graph)) {
         console.log("Graph is missing links");
         return;
@@ -79,30 +80,30 @@ function createGraph(graph) {
         graph.nodes[i].weight = 1.01;
     }
 
-    /*
-    let maxWeight = 0;
+    var linksThreshold = 2000;
+    if (graph.links.length < linksThreshold) {
+      let maxWeight = 0;
 
-    for (i = 0; i < graph.links.length; i++) {
-        nodes[graph.links[i].source].weight += graph.links[i].value;
-        nodes[graph.links[i].target].weight += graph.links[i].value;
+      for (i = 0; i < graph.links.length; i++) {
+          nodes[graph.links[i].source].weight += graph.links[i].value;
+          nodes[graph.links[i].target].weight += graph.links[i].value;
+  
+          if (nodes[graph.links[i].source].weight > maxWeight)
+              maxWeight = nodes[graph.links[i].source].weight;
+      }
 
-        if (nodes[graph.links[i].source].weight > maxWeight)
-            maxWeight = nodes[graph.links[i].source].weight;
+      for (i = 0; i < graph.nodes.length; i++) {
+          graph.nodes[i].weight /= maxWeight;
+      }
+   
+
+      var link = svg.append("g")
+          .attr("class", "links")
+        .selectAll("line")
+        .data(graph.links)
+        .enter().append("line")
+          .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
     }
-
-    for (i = 0; i < graph.nodes.length; i++) {
-        graph.nodes[i].weight /= maxWeight;
-    }
-    */
-
-    /*
-  var link = svg.append("g")
-      .attr("class", "links")
-    .selectAll("line")
-    .data(graph.links)
-    .enter().append("line")
-      .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
-      */
 
   var node = svg.append("g")
       .attr("class", "nodes")
@@ -139,13 +140,14 @@ function createGraph(graph) {
       .links(graph.links);
 
   function ticked() {
-      /*
-    link
+    
+    if (graph.links.length < linksThreshold) {
+      link
         .attr("x1", function(d) { return d.source.x; })
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
-        */
+    }   
 
     node
         .attr("cx", function(d) { return d.x; })
