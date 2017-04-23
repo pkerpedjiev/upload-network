@@ -3,6 +3,7 @@
 <link rel='stylesheet' href='style.css' />
 <input type="file" id="uploader">
 <button id="export-button">Export</button>
+<button id="toggle-links-button">Toggle Links</button>
 
 <div class="box">
   <div class="row content">
@@ -18,4 +19,5 @@
 <script>
     upload_button("uploader", load_dataset);
     export_button("export-button", export_graph);
+    toggle_links_button("toggle-links-button", toggle_links);
 </script>
