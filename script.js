@@ -50,11 +50,6 @@ var simulation = d3.forceSimulation()
 
                 return dist; 
             })
-            /*
-          .strength(function(d) {
-            return d.value; //Math.sqrt(d.value); 
-          })
-          */
           )
     .force("charge", d3.forceManyBody())
     .force("center", d3.forceCenter(parentWidth / 2, parentHeight / 2))
@@ -79,30 +74,13 @@ function createGraph(graph) {
         graph.nodes[i].weight = 1.01;
     }
 
-    /*
-    let maxWeight = 0;
 
-    for (i = 0; i < graph.links.length; i++) {
-        nodes[graph.links[i].source].weight += graph.links[i].value;
-        nodes[graph.links[i].target].weight += graph.links[i].value;
-
-        if (nodes[graph.links[i].source].weight > maxWeight)
-            maxWeight = nodes[graph.links[i].source].weight;
-    }
-
-    for (i = 0; i < graph.nodes.length; i++) {
-        graph.nodes[i].weight /= maxWeight;
-    }
-    */
-
-    /*
   var link = svg.append("g")
       .attr("class", "links")
     .selectAll("line")
     .data(graph.links)
     .enter().append("line")
       .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
-      */
 
   var node = svg.append("g")
       .attr("class", "nodes")
@@ -138,19 +116,88 @@ function createGraph(graph) {
   simulation.force("link")
       .links(graph.links);
 
+
   function ticked() {
-      /*
     link
         .attr("x1", function(d) { return d.source.x; })
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
-        */
 
     node
         .attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
   }
+
+    var brushMode = false;
+    var brushing = false;
+
+    var brush = d3.brush()
+    .on("start", brushstarted)
+    .on("brush", brushed)
+    .on("end", brushended);
+
+    var gBrushHolder = svg.append('g');
+    var gBrush = null;
+    /*
+        .call(brush);
+    */
+    
+    function brushstarted() {
+        brushing = true;
+    }
+
+  function brushed() {
+    var s = d3.event.selection;
+  }
+
+  function brushended() {
+      if (!d3.event.sourceEvent) return;
+      if (!d3.event.selection) return;
+      if (!gBrush) return;
+
+      gBrush.call(brush.move, null);
+
+      if (!brushMode) {
+          // the shift key has been release before we ended our brushing
+          gBrush.remove();
+          gBrush = null;
+      }
+
+      brushing = false;
+  }
+
+    d3.select('body').on('keydown', keydown);
+    d3.select('body').on('keyup', keyup);
+
+    function keydown() {
+        var shiftKey = d3.event.shiftKey;
+
+        if (shiftKey) {
+            // if we already have a brush, don't do anything
+            if (gBrush)
+                return;
+
+            brushMode = true;
+
+            if (!gBrush) {
+                gBrush = gBrushHolder.append('g');
+                gBrush.call(brush);
+            }
+        }
+    }
+
+    function keyup() {
+        var shiftKey = d3.event.shiftKey || d3.event.metaKey;
+        brushMode = false;
+
+        if (!brushing) {
+            // only remove the brush if we're not actively brushing
+            // otherwise it'll be removed when the brushing ends
+            gBrush.remove();
+            gBrush = null;
+        }
+    }
 
   return graph;
 };
@@ -209,5 +256,10 @@ function export_button(el, callback) {
     var exporter = document.getElementById(el);
 
     exporter.onclick = export_graph;
-
 }
+
+
+
+d3.json('miserables.json', function(graph) {
+    createGraph(graph);
+});
