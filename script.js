@@ -21,17 +21,19 @@ var svg = d3.select('svg')
 .attr('width', parentWidth)
 .attr('height', parentHeight)
 
-var rect = svg.append('rect')
+var gMain = svg.append('g');
+
+var rect = gMain.append('rect')
 .attr('width', parentWidth)
 .attr('height', parentHeight)
 .style('fill', 'white')
 
-var svg = svg.append('g');
+var svg = gMain.append('g');
 
 var zoom = d3.zoom()
 .on('zoom', zoomed)
 
-rect.call(zoom);
+gMain.call(zoom);
 
 
 function zoomed() {
@@ -55,6 +57,8 @@ var simulation = d3.forceSimulation()
     .force("center", d3.forceCenter(parentWidth / 2, parentHeight / 2))
     .force("x", d3.forceX(parentWidth/2))
     .force("y", d3.forceY(parentHeight/2));
+
+
 
 function removeGraphcs() {
     svg.selectAll('g')
@@ -83,13 +87,12 @@ function createGraph(graph) {
       .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
 
   var node = svg.append("g")
-      .attr("class", "nodes")
+      .attr("class", "node")
     .selectAll("circle")
     .data(graph.nodes)
     .enter().append("circle")
       //.attr("r", function(d) { return 8 * Math.sqrt(d.weight); })
       .attr("r", 5)
-      .style('stroke', 'grey')
       .attr("fill", function(d) { 
           if ('color' in d)
               return d.color;
@@ -139,16 +142,33 @@ function createGraph(graph) {
 
     var gBrushHolder = svg.append('g');
     var gBrush = null;
-    /*
-        .call(brush);
-    */
     
     function brushstarted() {
         brushing = true;
+
+        node.each(function(d) { 
+            d.previouslySelected = shiftKey && d.selected; });
     }
 
+    rect.on('click', () => {
+        node.each(function(d) {
+            d.selected = false;
+            d.previouslySelected = false;
+        });
+        node.classed("selected", false);
+    });
+
   function brushed() {
-    var s = d3.event.selection;
+    if (!d3.event.sourceEvent) return;
+    if (!d3.event.selection) return;
+
+    var extent = d3.event.selection;
+
+    node.classed("selected", function(d) {
+        return d.selected = d.previouslySelected ^
+        (extent[0][0] <= d.x && d.x < extent[1][0]
+         && extent[0][1] <= d.y && d.y < extent[1][1]);
+    });
   }
 
   function brushended() {
@@ -170,8 +190,10 @@ function createGraph(graph) {
     d3.select('body').on('keydown', keydown);
     d3.select('body').on('keyup', keyup);
 
+    var shiftKey;
+
     function keydown() {
-        var shiftKey = d3.event.shiftKey;
+        shiftKey = d3.event.shiftKey;
 
         if (shiftKey) {
             // if we already have a brush, don't do anything
@@ -188,7 +210,7 @@ function createGraph(graph) {
     }
 
     function keyup() {
-        var shiftKey = d3.event.shiftKey || d3.event.metaKey;
+        shiftKey = false;
         brushMode = false;
 
         if (!brushing) {
@@ -199,25 +221,52 @@ function createGraph(graph) {
         }
     }
 
+    function dragstarted(d) {
+      if (!d3.event.active) simulation.alphaTarget(0.9).restart();
+
+      console.log('dragstarted');
+
+        if (!d.selected && !shiftKey) {
+            // if this node isn't selected, then we have to unselect every other node
+            node.classed("selected", function(p) { return p.selected =  p.previouslySelected = false; });
+        }
+
+        d3.select(this).classed("selected", function(p) { d.previouslySelected = d.selected; return d.selected = true; });
+
+        node.filter(function(d) { return d.selected; })
+        .each(function(d) { //d.fixed |= 2; 
+          d.fx = d.x;
+          d.fy = d.y;
+        })
+
+    }
+
+    function dragged(d) {
+        console.log('d3.event', d3.event);
+
+      //d.fx = d3.event.x;
+      //d.fy = d3.event.y;
+            node.filter(function(d) { return d.selected; })
+            .each(function(d) { 
+                d.fx += d3.event.dx;
+                d.fy += d3.event.dy;
+            })
+    }
+
+    function dragended(d) {
+      if (!d3.event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+        node.filter(function(d) { return d.selected; })
+        .each(function(d) { //d.fixed &= ~6; 
+            d.fx = null;
+            d.fy = null;
+        })
+    }
+
   return graph;
 };
 
-function dragstarted(d) {
-  if (!d3.event.active) simulation.alphaTarget(0.9).restart();
-  d.fx = d.x;
-  d.fy = d.y;
-}
-
-function dragged(d) {
-  d.fx = d3.event.x;
-  d.fy = d3.event.y;
-}
-
-function dragended(d) {
-  if (!d3.event.active) simulation.alphaTarget(0);
-  d.fx = null;
-  d.fy = null;
-}
 
 // load dataset and create table
 function load_dataset(jsonText) {

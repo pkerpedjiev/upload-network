@@ -47,8 +47,15 @@ svg {
     border: 1px solid black;
 }
 
-.nodes circle {
+.node {
   stroke: #fff;
   stroke-width: 1.5px;
 }
 
+.node .selected {
+  stroke: black;
+}
+
+.link {
+  stroke: #999;
+}
