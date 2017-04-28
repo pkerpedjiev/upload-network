@@ -96,7 +96,18 @@ function createGraph(svg, graph) {
       .call(d3v4.drag()
           .on("start", dragstarted)
           .on("drag", dragged)
-          .on("end", dragended));
+          .on("end", dragended))
+      .on('click', function(d) {
+            if (d3.event.defaultPrevented) return;
+
+            if (!shiftKey) {
+                //if the shift key isn't down, unselect everything
+                node.classed("selected", function(p) { return p.selected =  p.previouslySelected = false; })
+            }
+
+            // always select this node
+            d3.select(this).classed("selected", d.selected = !d.previouslySelected);
+      });
 
   node.append("title")
       .text(function(d) { 
