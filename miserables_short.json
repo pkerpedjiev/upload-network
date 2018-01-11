@@ -1,0 +1,11 @@
+{
+  "nodes": [
+    {"id": "Valjean", "group": 2},
+    {"id": "Marius", "group": 8},
+    {"id": "Fantine", "group": 3}
+  ],
+  "links": [
+    {"source": "Fantine", "target": "Valjean", "value": 9},
+    {"source": "Marius", "target": "Valjean", "value": 19}
+  ]
+}
