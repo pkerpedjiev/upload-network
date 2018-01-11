@@ -21,8 +21,10 @@ function upload_button(el, callback) {
   var reader = new FileReader();
 
   reader.onload = function(e) {
+    console.log('onload');
     var contents = e.target.result;
     callback(contents);
+    uploader.value='';
   };
 
   uploader.addEventListener("change", handleFiles, false);  

@@ -53,9 +53,9 @@ function createGraph(svg, graph) {
                 })
               )
         .force("charge", d3v4.forceManyBody())
-        .force("center", d3v4.forceCenter(parentWidth / 2, parentHeight / 2))
-        .force("x", d3v4.forceX(parentWidth/2))
-        .force("y", d3v4.forceY(parentHeight/2));
+  //.force("center", d3v4.forceCenter(parentWidth / 2, parentHeight / 2))
+  //.force("x", d3v4.forceX(parentWidth/2))
+  //.force("y", d3v4.forceY(parentHeight/2));
 
 
     if (! ("links" in graph)) {
@@ -78,7 +78,15 @@ function createGraph(svg, graph) {
     .selectAll("line")
     .data(graph.links)
     .enter().append("line")
-      .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
+    .attr('stroke-opacity', 0.3)
+    .attr('stroke', function(d) {
+      if (d.color) {
+        console.log('d:', d);
+        return d.color;
+      } else
+        return "#999";
+    })
+    .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
 
   var node = svg.append("g")
       .attr("class", "node")
@@ -86,7 +94,7 @@ function createGraph(svg, graph) {
     .data(graph.nodes)
     .enter().append("circle")
       //.attr("r", function(d) { return 8 * Math.sqrt(d.weight); })
-      .attr("r", 5)
+      .attr("r", function(d) { return d.size || 5;})
       .attr("fill", function(d) { 
           if ('color' in d)
               return d.color;

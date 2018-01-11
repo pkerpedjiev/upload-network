@@ -36,11 +36,6 @@ body {
   flex: 0 1 40px;
 }
 
-.links line {
-  stroke: #999;
-  stroke-opacity: 0.3;
-}
-
 svg {
     width: 100%;
     height: 100%;
