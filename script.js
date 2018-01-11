@@ -6,180 +6,13 @@ c.size,"application/octet-stream"),l=!0);q&&"download"!==e&&(e+=".download");if(
 a]=d["on"+a]});b.write(c);d.abort=function(){b.abort();d.readyState=d.DONE};d.readyState=d.WRITING}),g)}),g)};a.getFile(e,{create:!1},h(function(a){a.remove();b()}),h(function(a){a.code===a.NOT_FOUND_ERR?b():g()}))}),g)}),g)):g()}},b=m.prototype;b.abort=function(){this.readyState=this.DONE;t(this,"abort")};b.readyState=b.INIT=0;b.WRITING=1;b.DONE=2;b.error=b.onwritestart=b.onprogress=b.onwrite=b.onabort=b.onerror=b.onwriteend=null;return function(a,b){return new m(a,b)}}}("undefined"!==typeof self&&
 self||"undefined"!==typeof window&&window||this.content);"undefined"!==typeof module&&null!==module?module.exports=saveAs:"undefined"!==typeof define&&null!==define&&null!=define.amd&&define([],function(){return saveAs});
 
-var svg = d3.select("svg"),
-    width = +svg.attr("width"),
-    height = +svg.attr("height");
-var graph;
-
-let parentWidth = d3.select('svg').node().parentNode.clientWidth;
-let parentHeight = d3.select('svg').node().parentNode.clientHeight;
-
-console.log('parentWidth:', parentWidth);
-console.log('parentHeight:', parentHeight);
-
-var svg = d3.select('svg')
-.attr('width', parentWidth)
-.attr('height', parentHeight)
-
-var rect = svg.append('rect')
-.attr('width', parentWidth)
-.attr('height', parentHeight)
-.style('fill', 'white')
-
-var svg = svg.append('g');
-
-var zoom = d3.zoom()
-.on('zoom', zoomed)
-
-rect.call(zoom);
-
-
-function zoomed() {
-    svg.attr('transform', d3.event.transform);
-}
-
-var color = d3.scaleOrdinal(d3.schemeCategory20);
-
-var simulation = d3.forceSimulation()
-    .force("link", d3.forceLink()
-            .id(function(d) { return d.id; })
-            .distance(function(d) { 
-                return 30;
-                //var dist = 20 / d.value;
-                //console.log('dist:', dist);
-
-                return dist; 
-            })
-            /*
-          .strength(function(d) {
-            return d.value; //Math.sqrt(d.value); 
-          })
-          */
-          )
-    .force("charge", d3.forceManyBody())
-    .force("center", d3.forceCenter(parentWidth / 2, parentHeight / 2))
-    .force("x", d3.forceX(parentWidth/2))
-    .force("y", d3.forceY(parentHeight/2));
-
-function removeGraphcs() {
-    svg.selectAll('g')
-        .remove();
-}
-
-function createGraph(graph) {
-    console.log('graph from createGraph', graph)
-    if (! ("links" in graph)) {
-        console.log("Graph is missing links");
-        return;
-    }
-
-    var nodes = {};
-    var i;
-    for (i = 0; i < graph.nodes.length; i++) {
-        nodes[graph.nodes[i].id] = graph.nodes[i];
-        graph.nodes[i].weight = 1.01;
-    }
-
-    var linksThreshold = 2000;
-    if (graph.links.length < linksThreshold) {
-      let maxWeight = 0;
-
-      for (i = 0; i < graph.links.length; i++) {
-          nodes[graph.links[i].source].weight += graph.links[i].value;
-          nodes[graph.links[i].target].weight += graph.links[i].value;
-  
-          if (nodes[graph.links[i].source].weight > maxWeight)
-              maxWeight = nodes[graph.links[i].source].weight;
-      }
-
-      for (i = 0; i < graph.nodes.length; i++) {
-          graph.nodes[i].weight /= maxWeight;
-      }
-   
-
-      var link = svg.append("g")
-          .attr("class", "links")
-        .selectAll("line")
-        .data(graph.links)
-        .enter().append("line")
-          .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
-    }
-
-  var node = svg.append("g")
-      .attr("class", "nodes")
-    .selectAll("circle")
-    .data(graph.nodes)
-    .enter().append("circle")
-      //.attr("r", function(d) { return 8 * Math.sqrt(d.weight); })
-      .attr("r", 5)
-      .style('stroke', 'grey')
-      .attr("fill", function(d) { 
-          if ('color' in d)
-              return d.color;
-          else
-            return color(d.group); 
-      })
-      .call(d3.drag()
-          .on("start", dragstarted)
-          .on("drag", dragged)
-          .on("end", dragended));
-
-  node.append("title")
-      .text(function(d) { 
-          if ('name' in d)
-              return d.name;
-          else
-                return d.id; 
-      });
-
-  simulation
-      .nodes(graph.nodes)
-      .on("tick", ticked);
-
-  simulation.force("link")
-      .links(graph.links);
-
-  function ticked() {
-    
-    if (graph.links.length < linksThreshold) {
-      link
-        .attr("x1", function(d) { return d.source.x; })
-        .attr("y1", function(d) { return d.source.y; })
-        .attr("x2", function(d) { return d.target.x; })
-        .attr("y2", function(d) { return d.target.y; });
-    }   
-
-    node
-        .attr("cx", function(d) { return d.x; })
-        .attr("cy", function(d) { return d.y; });
-  }
-
-  return graph;
-};
-
-function dragstarted(d) {
-  if (!d3.event.active) simulation.alphaTarget(0.9).restart();
-  d.fx = d.x;
-  d.fy = d.y;
-}
-
-function dragged(d) {
-  d.fx = d3.event.x;
-  d.fy = d3.event.y;
-}
-
-function dragended(d) {
-  if (!d3.event.active) simulation.alphaTarget(0);
-  d.fx = null;
-  d.fy = null;
-}
+var d3v4 = d3;
+var svg = d3.select('svg');
 
 // load dataset and create table
 function load_dataset(jsonText) {
   var data = JSON.parse(jsonText)
-  console.log('data:', data);
-  graph = createGraph(data);
-  simulation.alphaTarget(0.3).restart();
+  graph = createGraph(svg, data);
 }
 
 // handle upload button
@@ -188,8 +21,10 @@ function upload_button(el, callback) {
   var reader = new FileReader();
 
   reader.onload = function(e) {
+    console.log('onload');
     var contents = e.target.result;
     callback(contents);
+    uploader.value='';
   };
 
   uploader.addEventListener("change", handleFiles, false);  
@@ -213,22 +48,7 @@ function export_button(el, callback) {
     exporter.onclick = export_graph;
 }
 
-function toggle_links_button(el, callback) {
-    var linksButton = document.getElementById(el);
-    linksButton.onclick = toggle_links;
-}
 
-var linksVisible = true;
-function toggle_links() {
-  if (linksVisible) {
-    linksVisible = false;
-    d3.selectAll('line')
-      .transition()
-        .style('stroke-opacity', 0);
-  } else {
-    linksVisible = true;
-    d3.selectAll('line')
-      .transition()
-      .style('stroke-opacity', 0.3);
-  }
-}
+d3.json('miserables.json', function(graph) {
+    createGraph(svg, graph);
+});
