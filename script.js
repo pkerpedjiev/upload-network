@@ -8,6 +8,8 @@ self||"undefined"!==typeof window&&window||this.content);"undefined"!==typeof mo
 
 var d3v4 = d3;
 var svg = d3.select('svg');
+var graph;
+var linksVisible = true;
 
 // load dataset and create table
 function load_dataset(jsonText) {

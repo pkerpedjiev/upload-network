@@ -53,9 +53,9 @@ function createGraph(svg, graph) {
                 })
               )
         .force("charge", d3v4.forceManyBody())
-  //.force("center", d3v4.forceCenter(parentWidth / 2, parentHeight / 2))
-  //.force("x", d3v4.forceX(parentWidth/2))
-  //.force("y", d3v4.forceY(parentHeight/2));
+        .force("center", d3v4.forceCenter(parentWidth / 2, parentHeight / 2))
+        .force("x", d3v4.forceX(parentWidth/2))
+        .force("y", d3v4.forceY(parentHeight/2));
 
 
     if (! ("links" in graph)) {

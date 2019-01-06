@@ -1,18 +1,43 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <link rel='stylesheet' href='style.css' />
-<input type="file" id="uploader">
-<button id="export-button">Export</button>
-<button id="toggle-links-button">Toggle Links</button>
 
-<div class="box">
-  <div class="row content">
+<body>
+  <div class="main">
+    <div class="header">
+      <input type="file" id="uploader">
+      <button id="export-button">Export</button>
+    </div>
+
+    <div class="middle">
         <svg ></svg>
+    </div>
+
+    <div class="footer">
+      <div class="wrap-collabsible">
+        <input id="collapsible" class="toggle" type="checkbox" checked>
+        <label for="collapsible" class="lbl-toggle">Example Input:</label>
+        <div class="collapsible-content">
+          <div class="content-inner">
+            <pre>
+            {
+              "nodes": [
+                {"id": "Valjean", "group": 2},
+                {"id": "Marius", "group": 8},
+                {"id": "Fantine", "group": 3}
+              ],
+              "links": [
+                {"source": "Fantine", "target": "Valjean", "value": 9},
+                {"source": "Marius", "target": "Valjean", "value": 19}
+              ]
+            }
+            </pre>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="row footer">
-    <p><b>footer</b> (fixed height)</p>
-  </div>
-</div>
+</body>
 
 <script src="https://d3js.org/d3.v4.js"></script>
 <script src='d3-brush-lite.js'></script>
@@ -21,5 +46,4 @@
 <script>
     upload_button("uploader", load_dataset);
     export_button("export-button", export_graph);
-    toggle_links_button("toggle-links-button", toggle_links);
 </script>
