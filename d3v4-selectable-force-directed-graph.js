@@ -13,8 +13,6 @@ function createGraph(svg, graph) {
     let parentHeight = d3v4.select('svg').node().parentNode.clientHeight;
 
     var svg = d3v4.select('svg')
-    .attr('width', parentWidth)
-    .attr('height', parentHeight)
 
     // remove any previous graphs
     svg.selectAll('.g-main').remove();
@@ -23,9 +21,9 @@ function createGraph(svg, graph) {
     .classed('g-main', true);
 
     var rect = gMain.append('rect')
-    .attr('width', parentWidth)
-    .attr('height', parentHeight)
     .style('fill', 'white')
+    .style('width', '100%')
+    .style('height', '100%');
 
     var svg = gMain.append('g');
 

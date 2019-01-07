@@ -1,3 +1,7 @@
+<style>
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+</style>
+
 html,
 body {
   margin: 0
@@ -20,7 +24,11 @@ body {
 .header {
   display: flex;
   justify-content: space-between;
-  flex-grow: 0;
+  height: 1.8rem;
+  flex-shrink: 0;
+  margin-top: .3rem;
+  margin-bottom: 0.3rem;
+  align-items: center;
 }
 
 .middle {
@@ -29,9 +37,13 @@ body {
   flex-grow: 1;
 }
 
+.footer {
+}
+
 svg {
     border: 1px solid black;
     height: 100%;
+    width: 100%;
 }
 
 .box {
@@ -120,9 +132,12 @@ input[type='checkbox'] {
   background: rgba(180, 180, 180, .2);
   border-bottom: 1px solid rgba(250, 224, 66, .45);
 
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
   border-bottom-left-radius: 7px;
   border-bottom-right-radius: 7px;
   padding: .5rem 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .collapsible-content {
@@ -130,6 +145,8 @@ input[type='checkbox'] {
   overflow: hidden;
 
   transition: max-height .25s ease-in-out;
+    margin-bottom: 0.5rem;
+
 }
 
 .toggle:checked + .lbl-toggle + .collapsible-content {
@@ -143,4 +160,41 @@ input[type='checkbox'] {
 .toggle:checked + .lbl-toggle {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
+}
+
+.inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.upper-button {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #444;
+  border: 1px solid #ccc  ;
+  font-family: 'Open Sans', sans-serif;
+
+  padding: .2rem;
+
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+
+  background-color: white;
+}
+
+.inputfile + label {
+  display: inline-block;
+
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+  background-color: rgba(180, 180, 180, .2);
 }
