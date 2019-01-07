@@ -1,6 +1,5 @@
 html,
 body {
-  height: 100vh;
   margin: 0
 }
 
@@ -15,17 +14,24 @@ body {
   display: flex;
   flex-direction: column;
   align-content: stretch;
+  height: 100vh;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
+  flex-grow: 0;
 }
 
 .middle {
   display: flex;
   align-content: stretch;
   flex-grow: 1;
+}
+
+svg {
+    border: 1px solid black;
+    height: 100%;
 }
 
 .box {
@@ -55,10 +61,6 @@ body {
 
 .box .row.footer {
   flex: 0 1 40px;
-}
-
-svg {
-    border: 1px solid black;
 }
 
 .node {
